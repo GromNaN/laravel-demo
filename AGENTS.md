@@ -47,6 +47,56 @@ The commit message of a demo branch follows the other ones:
 Add a Laravel demo of <feature>
 ```
 
+# Create the application
+
+A demo starts from a stock Laravel application, created in the branch, which is
+empty at that point:
+
+```sh
+composer global require laravel/installer   # once per machine
+laravel new . --no-interaction
+```
+
+Keep the skeleton as the installer leaves it: the `.editorconfig`, the
+`.gitignore`, the `artisan` script, the `composer.json` scripts and the test
+setup are the same in every demo, and a reader recognizes them.
+
+Then add the package and the connection:
+
+```sh
+composer require mongodb/laravel-mongodb
+```
+
+- The installer lists SQLite, MySQL, MariaDB, PostgreSQL and SQL Server, and no
+  MongoDB. Answer `sqlite`, then set `DB_CONNECTION=mongodb` in `.env` and
+  declare the connection in `config/database.php`.
+- Add the VCS repository to `composer.json` when the demo needs a version of
+  `mongodb/laravel-mongodb` that is not released yet, and say so in the README.
+- Trim `.env.example` to the variables the demo reads. Comment each MongoDB
+  variable with the value it expects.
+
+# The demo page
+
+The feature is shown on a web page. A reader clones the branch, runs
+`php artisan serve` and sees the feature work in the browser, without reading
+the sources first.
+
+The page stays simple, like the other demos:
+
+- One Blade view per page, with its own `<style>` block. No layout, no CSS
+  framework, no JavaScript, no Vite asset.
+- The default `welcome.blade.php` stays at `/` and links to the demo pages.
+- The page is a list of steps. A step shows the PHP code it runs, then the
+  result of that code, so the reader follows the demo on the page alone.
+- A button runs the demo again, so the page can be replayed and compared.
+- The page inserts its own sample data. It works right after the install steps
+  of the README, on a fresh database, and it can be run twice in a row.
+- The code lives in a controller, one invokable controller per page. The view
+  receives plain arrays and strings, not Eloquent models.
+- A console command can complete the page when the output does not fit on a
+  page, for instance a long dump or a progress log. The page remains the entry
+  point of the demo.
+
 # The README of a demo
 
 Each demo branch documents itself in its README, in this order:
@@ -56,7 +106,8 @@ Each demo branch documents itself in its README, in this order:
 2. The requirements: PHP version, `ext-mongodb` version, MongoDB version and
    topology.
 3. The install steps and the environment variables to set.
-4. How to run the demo and what the output means.
+4. The URL of each demo page, and what the page shows.
+5. The console commands the demo provides, when it has some.
 
 # The README of main
 
